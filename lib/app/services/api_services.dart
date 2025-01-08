@@ -5,6 +5,7 @@ import 'package:absensi_operator/app/data/checkin.dart';
 import 'package:absensi_operator/app/data/checkout.dart';
 import 'package:absensi_operator/app/data/getIdAttendances.dart';
 import 'package:absensi_operator/app/data/history.dart';
+import 'package:absensi_operator/app/data/inspectionResponse.dart';
 import 'package:absensi_operator/app/data/jadwal.dart';
 import 'package:absensi_operator/app/data/notif.dart';
 import 'package:absensi_operator/app/data/user.dart';
@@ -440,9 +441,7 @@ class ApiService {
     }
   }
 
-  // INSPECTION POST
-  // INSPECTION POST
-  Future<void> postInspection({
+  Future<InspectionResponse> postInspection({
     required String idUser,
     required String plat,
     required String frontCameraPath,
@@ -458,6 +457,7 @@ class ApiService {
     if (token == null) {
       throw Exception('No token found');
     }
+
     final headers = {'Authorization': 'Bearer $token'};
 
     final request = http.MultipartRequest('POST', url);
@@ -487,9 +487,9 @@ class ApiService {
 
       // Tambahkan data lainnya
       request.fields.addAll({
-        'id_user': idUser, // ID User
-        'plat': plat, // Plat kendaraan
-        'condition': condition, // Kondisi
+        'id_user': idUser,
+        'plat': plat,
+        'condition': condition,
       });
 
       request.headers.addAll(headers);
@@ -497,12 +497,16 @@ class ApiService {
       final response = await request.send();
       final responseBody = await response.stream.bytesToString();
 
-      if (response.statusCode == 201) {
+      // Log respons body
+      print('Response body inspection: $responseBody');
+
+      if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(responseBody);
-        print("Inspection Success: $jsonResponse");
+
+        // Parsing response JSON ke model
+        return InspectionResponse.fromJson(jsonResponse);
       } else {
-        final jsonResponse = jsonDecode(responseBody);
-        throw Exception(jsonResponse['message'] ?? 'Failed to add inspection.');
+        throw Exception('Failed to post inspection: ${response.statusCode}');
       }
     } catch (e) {
       print('Error posting inspection: $e');

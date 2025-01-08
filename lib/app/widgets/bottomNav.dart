@@ -1,3 +1,4 @@
+import 'package:absensi_operator/app/modules/Inspection/controllers/inspection_controller.dart';
 import 'package:absensi_operator/app/modules/Inspection/views/inspection_view.dart';
 import 'package:absensi_operator/app/modules/absensi/controllers/absensi_controller.dart';
 import 'package:absensi_operator/app/modules/absensi/views/absensi_view.dart';
@@ -23,6 +24,8 @@ class BottomNavBarState extends State<BottomNavBar> {
   DateTime? _lastPressedTime;
 
   final AbsensiController checkinController = Get.put(AbsensiController());
+  final InspectionController inspectionController =
+      Get.put(InspectionController());
 
   static final List<Widget> _screens = [
     const HomeView(),
@@ -35,6 +38,12 @@ class BottomNavBarState extends State<BottomNavBar> {
 
   void _onItemTapped(int index) {
     setState(() {
+      if (index == 3) {
+        // Reset state untuk InspectionView
+        inspectionController.resetState();
+      }
+
+      // Logika untuk Absensi (Check-In) View
       if (_selectedIndex == 2 && index != 2) {
         if (checkinController.isCountdownActive.value) {
           checkinController.countdownTimer?.cancel();
@@ -45,6 +54,8 @@ class BottomNavBarState extends State<BottomNavBar> {
       } else if (_selectedIndex != 2 && index == 2) {
         checkinController.initializeCamera();
       }
+
+      // Perbarui index yang dipilih
       _selectedIndex = index;
     });
   }
@@ -52,13 +63,10 @@ class BottomNavBarState extends State<BottomNavBar> {
   Future<bool> _onWillPop() async {
     DateTime currentTime = DateTime.now();
 
-    // Jika tombol back ditekan lebih dari 2 detik setelah terakhir kali
     if (_lastPressedTime == null ||
-        currentTime.difference(_lastPressedTime!) >
-            const Duration(seconds: 2)) {
+        currentTime.difference(_lastPressedTime!) > const Duration(seconds: 2)) {
       _lastPressedTime = currentTime;
 
-      // Tampilkan pesan Snackbar untuk peringatan
       Get.snackbar(
         "Press Back Again",
         "Press back again within 2 seconds to exit the app.",
@@ -68,8 +76,7 @@ class BottomNavBarState extends State<BottomNavBar> {
       return false; // Jangan keluar
     }
 
-    // Keluar dari aplikasi jika tombol back ditekan dalam waktu <= 2 detik
-    SystemNavigator.pop(); // Menghentikan aplikasi sepenuhnya
+    SystemNavigator.pop(); // Keluar dari aplikasi
     return true;
   }
 

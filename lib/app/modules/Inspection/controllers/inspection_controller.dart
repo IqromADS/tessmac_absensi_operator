@@ -1,6 +1,7 @@
 import 'package:absensi_operator/app/data/vehiclePlates.dart';
 import 'package:absensi_operator/app/services/api_services.dart';
 import 'package:absensi_operator/app/widgets/utils.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +14,7 @@ class InspectionController extends GetxController {
   var isDropdownVisible = false.obs;
   var selectedPlate = "".obs;
   var plates = <VehiclePlates>[].obs;
+  var isLoading = false.obs;
 
   var isRedSelected = false.obs;
   var isYellowSelected = false.obs;
@@ -123,7 +125,26 @@ class InspectionController extends GetxController {
     }
   }
 
+ // Tambahkan metode resetState di sini
+  void resetState() {
+    selectedPlate.value = ""; // Reset dropdown
+    isDropdownVisible.value = false; // Sembunyikan dropdown
+    isRedSelected.value = false;
+    isYellowSelected.value = false;
+    isGreenSelected.value = false;
+    frontCameraPath.value = "";
+    rightCameraPath.value = "";
+    leftCameraPath.value = "";
+    personCameraPath.value = "";
+    truckCameraPath.value = "";
+  }
+
+
+
   Future<void> submitInspection() async {
+    isLoading.value = true;
+
+    // Validasi input
     if (selectedPlate.value.isEmpty ||
         frontCameraPath.value.isEmpty ||
         rightCameraPath.value.isEmpty ||
@@ -140,9 +161,11 @@ class InspectionController extends GetxController {
         'All fields and photos must be filled!',
         snackPosition: SnackPosition.BOTTOM,
       );
+      isLoading.value = false;
       return;
     }
 
+    // Tentukan kondisi
     final condition = isRedSelected.value
         ? 'red'
         : isYellowSelected.value
@@ -157,7 +180,8 @@ class InspectionController extends GetxController {
         throw Exception('User ID is missing. Ensure the user is logged in.');
       }
 
-      await apiService.postInspection(
+      // Panggil fungsi postInspection
+      final response = await apiService.postInspection(
         idUser: idUser,
         plat: selectedPlate.value,
         frontCameraPath: frontCameraPath.value,
@@ -167,12 +191,27 @@ class InspectionController extends GetxController {
         frontTruckPath: truckCameraPath.value,
         condition: condition,
       );
-
-      Get.snackbar('Success', 'Inspection submitted successfully!',
-          snackPosition: SnackPosition.BOTTOM);
+      resetState();
+      Get.snackbar(
+        'Success',
+        'Inspection submitted successfully',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.transparent,
+        colorText: Colors.white,
+      );
+      print('Inspection submitted successfully!');
     } catch (e) {
-      print('Error submitting inspection: $e');
-      Get.snackbar('Error', e.toString(), snackPosition: SnackPosition.BOTTOM);
+      // Tangani error jika terjadi
+      print('Error submitting inspection');
+      Get.snackbar(
+        'Error',
+        'Failed to submit inspection. Please try again.',
+        snackPosition: SnackPosition.TOP,
+        colorText: Colors.white,
+        backgroundColor: Colors.transparent,
+      );
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -184,5 +223,11 @@ class InspectionController extends GetxController {
     fetchUserRole();
     fetchVehiclePlates();
     super.onInit();
+  }
+
+ @override
+  void onReady() {
+    super.onReady();
+    resetState(); // Reset state setiap kali halaman ini siap
   }
 }
