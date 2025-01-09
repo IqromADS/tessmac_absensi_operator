@@ -110,7 +110,7 @@ class HomeView extends GetView<HomeController> {
           ),
           Padding(
             padding: EdgeInsets.only(
-              top: 280.h - (280.h / 20),
+              top: 300.h - (300.h / 20),
             ),
             child: Container(
               width: double.infinity,

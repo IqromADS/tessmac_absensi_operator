@@ -1,3 +1,11 @@
+buildscript {
+    ext.kotlin_version = "1.9.0" // Pastikan versi Kotlin terbaru
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.0.2' // Pastikan versi AGP sesuai
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
 plugins {
     id "com.android.application"
     id "kotlin-android"

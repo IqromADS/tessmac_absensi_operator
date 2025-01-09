@@ -22,7 +22,7 @@
 
 
     <application
-        android:label="absensi_operator"
+        android:label="Absensi Operator"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true">

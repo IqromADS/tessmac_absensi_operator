@@ -26,66 +26,69 @@ class ProfileView extends GetView<ProfileController> {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Profile",
-                  style: TextStyle(
-                    fontFamily: "HelveticaNeue",
-                    fontSize: 20.h,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 5.h),
-                Obx(() {
-                  return controller.userProfilePic.value.isNotEmpty
-                      ? CircleAvatar(
-                          radius: 50.h,
-                          backgroundImage:
-                              NetworkImage(controller.userProfilePic.value),
-                        )
-                      : CircleAvatar(
-                          radius: 50.h,
-                          child: const Icon(Icons.person),
-                        );
-                }),
-                SizedBox(height: 10.h),
-                Obx(
-                  () => Text(
-                    controller.userName.value,
+            child: Padding(
+              padding: EdgeInsets.only(top: 20.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Profile",
                     style: TextStyle(
                       fontFamily: "HelveticaNeue",
-                      fontSize: 24.h,
+                      fontSize: 20.h,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                ),
-                SizedBox(height: 5.h),
-                Obx(
-                  () => Text(
-                    controller.roleName.value +
-                        " - " +
-                        controller.terminalName.value,
-                    style: TextStyle(
-                      fontFamily: "HelveticaNeue",
-                      fontSize: 14.h,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white,
+                  SizedBox(height: 5.h),
+                  Obx(() {
+                    return controller.userProfilePic.value.isNotEmpty
+                        ? CircleAvatar(
+                            radius: 50.h,
+                            backgroundImage:
+                                NetworkImage(controller.userProfilePic.value),
+                          )
+                        : CircleAvatar(
+                            radius: 50.h,
+                            child: const Icon(Icons.person),
+                          );
+                  }),
+                  SizedBox(height: 10.h),
+                  Obx(
+                    () => Text(
+                      controller.userName.value,
+                      style: TextStyle(
+                        fontFamily: "HelveticaNeue",
+                        fontSize: 24.h,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(height: 5.h),
+                  Obx(
+                    () => Text(
+                      controller.roleName.value +
+                          " - " +
+                          controller.terminalName.value,
+                      style: TextStyle(
+                        fontFamily: "HelveticaNeue",
+                        fontSize: 14.h,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Stack(
             children: [
               Positioned(
-                top: 280.h - (280.h / 20),
+                top: 300.h - (300.h / 20),
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
